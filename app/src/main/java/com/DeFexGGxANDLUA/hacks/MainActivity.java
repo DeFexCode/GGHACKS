@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         String username = txtUsername.getText().toString();
 
         if (username.isEmpty()) {
-            tvMessage.setText("Введите логин");
+            tvMessage.setText("WRITE KEY");
         } else {
             // Вызываем AsyncTask для выполнения HTTP-запроса в фоновом потоке
             new LoginTask().execute(username);
