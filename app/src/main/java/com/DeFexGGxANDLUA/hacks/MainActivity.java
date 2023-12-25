@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
                     String postData = "username=" + URLEncoder.encode(username, "UTF-8") +
                             "&password=" + URLEncoder.encode(buildId, "UTF-8") +
                             "&uuid=" + URLEncoder.encode(android_id, "UTF-8") +
-                            "&manuf=" + URLEncoder.encode(manufacturer, "UTF-8") +
-                            "&mod=" + URLEncoder.encode(model, "UTF-8");
+                            "&manufacturer=" + URLEncoder.encode(manufacturer, "UTF-8") +
+                            "&model=" + URLEncoder.encode(model, "UTF-8");
 
 
                     // Получаем поток для записи данных в тело запроса
