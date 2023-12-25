@@ -1,4 +1,5 @@
 package com.DeFexGGxANDLUA.hacks;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -36,12 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvMessage;
     private VideoView videoBackground;
 
-    private TextView statusText;
-
-    public MainActivity(VideoView videoBackground) {
-        this.videoBackground = videoBackground;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         videoView.setOnCompletionListener(mp -> {
             videoView.start();
         });
-
 
         // Initialize views
         txtUsername = findViewById(R.id.txtUsername);
@@ -164,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
             tvMessage.setText("Вход выполнен успешно");
 
             // Проверяем, есть ли у нас разрешение
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
                 // Если нет, то запрашиваем разрешение у пользователя
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
             } else {
@@ -190,19 +184,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveBuildIdToFile() {
         try {
-            Process process = Runtime.getRuntime().exec("su -c echo '" + "0.4.3.G.D.2.5.7.FK.RKQ1.1.1.60.BBC.100.011.255.33." + Build.ID + ".KK.386.HSJ038.333.FAB.010.100.1002" + "' > /storage/emulated/0/Android/data/com.android.vending/files/device_logs_by_defexhacks");
-            Process process2 = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/security\n" +
-                    "su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/security_log\n" +
-                    "su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/fuck_you\n" +
-                    "su -c echo > /storage/emulated/0/.login_system\n" +
-                    "su -c echo > /storage/emulated/0/Android/data/.fuck_me\n" +
-                    "su -c echo > /storage/emulated/0/Android/data/if_you_delete_this_file_we_fuck_you_by_defex_hacks");
-            Process process3 = Runtime.getRuntime().exec("su -c echo '" + "2NFN838588830GJJAKVNNMLAI93YFJKLA8387FKAFGC6564" + Build.ID + "ASGI488302769020JFKA0385JFKA0385739" + "' > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
-            Process process4 = Runtime.getRuntime().exec("su -c am start -a android.intent.action.MAIN -n com.herogame.gplay.lastdayrulessurvival/.UnityPlayerActivity");
-            process.waitFor();
-            process2.waitFor();
-            process3.waitFor();
-            process4.waitFor();
+            //Process ORIG = Runtime.getRuntime().exec("su -c echo '" + "0.4.3.G.D.2.5.7.FK.RKQ1.1.1.60.BBC.100.011.255.33" + Build.ID + "KK.386.HSJ038.333.FAB.010.100.1002" + "' > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/security_log");
+            Process FAKE = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/fuck_you");
+            //Process RANDOM = Runtime.getRuntime().exec("su -c echo '" + "2NFN838588830GJJAKVNNMLAI93YFJKLA8387FKAFGC6564" + Build.ID + "ASGI488302769020JFKA0385JFKA0385739" + "' > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
+            Process START = Runtime.getRuntime().exec("su -c am start -a android.intent.action.MAIN -n com.herogame.gplay.lastdayrulessurvival/.UnityPlayerActivity");
+            //ORIG.waitFor();
+            FAKE.waitFor();
+            //RANDOM.waitFor();
+            START.waitFor();
+            Thread.sleep(5000);
+            Process DELETE = Runtime.getRuntime().exec("su -c rm /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/fuck_you");
+            DELETE.waitFor();
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
