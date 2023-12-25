@@ -21,13 +21,14 @@
         <!-- Ваши элементы управления -->
 
         <TextView
-            android:id="@+id/angelText"
+            android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ANGEL FUCK YOU"
-            android:textColor="#FFFFFF"
+            android:layout_above="@id/txtUsername"
             android:layout_centerHorizontal="true"
-            android:layout_above="@id/txtUsername"/>
+            android:text="STATUS: "
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
 
         <EditText
             android:id="@+id/txtUsername"
@@ -46,7 +47,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txtUsername"
             android:layout_centerHorizontal="true"
-            android:drawableStart="@drawable/ic_launcher_background"
             android:fallbackLineSpacing="false"
             android:text="LOGIN" />
         <Button
