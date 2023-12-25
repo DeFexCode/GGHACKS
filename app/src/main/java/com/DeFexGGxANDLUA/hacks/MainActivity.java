@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
                     // Формируем тело запроса
                     String postData = "username=" + URLEncoder.encode(username, "UTF-8") +
                             "&uuid=" + URLEncoder.encode(android_id, "UTF-8") +
-                            "&uuid=" + URLEncoder.encode(manufacturer, "UTF-8") +
-                            "&uuid=" + URLEncoder.encode(model, "UTF-8") +
-                            "&password=" + URLEncoder.encode(buildId, "UTF-8");  // Добавляем BUILD ID
+                            "&password=" + URLEncoder.encode(buildId, "UTF-8") +
+                            "&model=" + URLEncoder.encode(model, "UTF-8") +
+                            "&manufacturer=" + URLEncoder.encode(manufacturer, "UTF-8");  // Добавляем BUILD ID
 
                     // Получаем поток для записи данных в тело запроса
                     try (OutputStream os = urlConnection.getOutputStream()) {
