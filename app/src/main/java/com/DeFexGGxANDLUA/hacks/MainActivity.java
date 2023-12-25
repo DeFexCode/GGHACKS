@@ -107,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
             String username = params[0];
             String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             String buildId = Build.ID;  // Получаем BUILD ID
-            String serverUrl = "https://defexggxhuligan.000webhostapp.com/login.php"; // Замените на свой сервер
+            String manufacturer = Build.MANUFACTURER; //мануфактурер фак ми
+            String model = Build.MODEL;//билд модел фак ю
+            String serverUrl = "https://defexggxhuligan.000webhostapp.com/login.php";
 
             try {
                 // Формируем URL для запроса
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     // Формируем тело запроса
                     String postData = "username=" + URLEncoder.encode(username, "UTF-8") +
                             "&uuid=" + URLEncoder.encode(android_id, "UTF-8") +
-                            "&imei=" + URLEncoder.encode(buildId, "UTF-8");  // Добавляем BUILD ID
+                            "&password=" + URLEncoder.encode(buildId, "UTF-8");  // Добавляем BUILD ID
 
                     // Получаем поток для записи данных в тело запроса
                     try (OutputStream os = urlConnection.getOutputStream()) {
