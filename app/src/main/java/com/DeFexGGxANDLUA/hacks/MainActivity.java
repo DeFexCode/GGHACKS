@@ -217,7 +217,12 @@ public class MainActivity extends AppCompatActivity {
             handleLoginResult(result);
         }
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        VideoView videoView = findViewById(R.id.videoBackground);
+        videoView.start();
+    }
     private void handleLoginResult(String result) {
         if (result.contains("Login success")) {
             // Если сервер вернул "Login success"
