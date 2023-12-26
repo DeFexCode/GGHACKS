@@ -8,11 +8,17 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.TextView;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
 import androidx.annotation.RequiresApi;
@@ -20,12 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.widget.VideoView;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvMessage;
     private VideoView videoBackground;
 
+    private TextView statusTextView;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +49,15 @@ public class MainActivity extends AppCompatActivity {
 
         Button openChannelButton = findViewById(R.id.openChannelButton);
 
+        statusTextView = findViewById(R.id.statusText);
+        new DownloadDataTask(statusTextView).execute("https://pastebin.com/raw/CfcZ8y3P");
         openChannelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openTelegramChannel();
             }
         });
+
 
         VideoView videoView = findViewById(R.id.videoBackground);
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video;
@@ -87,6 +95,62 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Вызываем AsyncTask для выполнения HTTP-запроса в фоновом потоке
             new LoginTask().execute(username);
+        }
+    }
+
+    private class DownloadDataTask extends AsyncTask<String, Void, String> {
+
+        private TextView statusTextView;
+
+        public DownloadDataTask(TextView statusTextView) {
+            this.statusTextView = statusTextView;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                return downloadUrl(urls[0]);
+            } catch (IOException e) {
+                return "Error: " + e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            statusTextView.setText("Status: " + result);
+        }
+
+        private String downloadUrl(String urlString) throws IOException {
+            InputStream inputStream = null;
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setReadTimeout(10000);
+                connection.setConnectTimeout(15000);
+                connection.setRequestMethod("GET");
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = connection.getInputStream();
+                    return readStream(inputStream);
+                } else {
+                    return "Error: " + responseCode;
+                }
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
+        }
+
+        private String readStream(InputStream inputStream) throws IOException {
+            StringBuilder result = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
         }
     }
 

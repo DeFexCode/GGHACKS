@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.5)
 project(AndKittyInjector)
 
 # Set the path to the C and C++ compilers from your NDK
-set(CMAKE_C_COMPILER C:/Users/renat/AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe)
-set(CMAKE_CXX_COMPILER C:/Users/renat/AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe)
+set(CMAKE_C_COMPILER D:/tools/ANDROID_SDK/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe)
+set(CMAKE_CXX_COMPILER D:/tools/ANDROID_SDK/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe)
 
 # First Project: KittyMemoryExExample
 set(KITTYMEMORYEX_PATH ${CMAKE_SOURCE_DIR}/KittyMemoryEx)
