@@ -20,12 +20,15 @@
 
         <!-- Ваши элементы управления -->
 
+        <!-- Ваша кнопка в макете -->
+
         <TextView
             android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/txtUsername"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="7dp"
             android:text="STATUS: "
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
@@ -33,13 +36,16 @@
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/edittext_border"
             android:hint="WRITE KEY"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF" />
+            android:textColor="#8BA3B8"
+            android:textColorHint="#8BA3B8"
+            android:textColorLink="#8BA3B8"
+            android:gravity="center_vertical|center_horizontal" />
 
         <Button
             android:id="@+id/btnLogin"
@@ -47,23 +53,37 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txtUsername"
             android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_ripple"
             android:fallbackLineSpacing="false"
-            android:text="LOGIN" />
+            android:text="LOGIN"
+            android:textColor="#FFFFFF" />
+
         <Button
             android:id="@+id/openChannelButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TELEGRAM"
             android:layout_below="@id/btnLogin"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_ripple"
+            android:text="TELEGRAM"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btnLogin"
+            android:layout_below="@id/openChannelButton"
             android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="Happy New Year!"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/copyrightText"
@@ -73,6 +93,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
             android:text="Copyright by DEFEX HACKS@2023"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

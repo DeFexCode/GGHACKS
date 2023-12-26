@@ -259,17 +259,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveBuildIdToFile() {
         try {
-            //Process ORIG = Runtime.getRuntime().exec("su -c echo '" + "0.4.3.G.D.2.5.7.FK.RKQ1.1.1.60.BBC.100.011.255.33" + Build.ID + "KK.386.HSJ038.333.FAB.010.100.1002" + "' > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/security_log");
-            Process FAKE = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/fuck_you");
+
+            //Process ORIG = Runtime.getRuntime().exec("su -c echo '" + "0.4.3.G.D.2.5.7.FK.RKQ1.1.1.60.BBC.100.011.255.33" + Build.ID + "KK.386.HSJ038.333.FAB.010.100.1002" + "' > /storage/emulated/0/Android/com.android.vending/files/defexlogs_your_phone");
+            Process ORIG = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.android.vending/files/defexlogs_your_phone");
+            Process FAKE = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
+
             //Process RANDOM = Runtime.getRuntime().exec("su -c echo '" + "2NFN838588830GJJAKVNNMLAI93YFJKLA8387FKAFGC6564" + Build.ID + "ASGI488302769020JFKA0385JFKA0385739" + "' > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
             Process START = Runtime.getRuntime().exec("su -c am start -a android.intent.action.MAIN -n com.herogame.gplay.lastdayrulessurvival/.UnityPlayerActivity");
-            //ORIG.waitFor();
+
+            ORIG.waitFor();
             FAKE.waitFor();
             //RANDOM.waitFor();
             START.waitFor();
             Thread.sleep(5000);
-            Process DELETE = Runtime.getRuntime().exec("su -c rm /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/fuck_you");
+            Process DELETE = Runtime.getRuntime().exec("su -c rm /storage/emulated/0/Android/data/com.android.vending/files/defexlogs_your_phone");
+            Process DELETE2 = Runtime.getRuntime().exec("su -c rm /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
             DELETE.waitFor();
+            DELETE2.waitFor();
+            /*Process INJECT = Runtime.getRuntime().exec("su -c sh /data/inject/inject.sh");
+            INJECT.waitFor();*/
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
