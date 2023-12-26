@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             String buildId = Build.ID;  // Получаем BUILD ID
             String manufacturer = Build.MANUFACTURER; //мануфактурер фак ми
             String model = Build.MODEL;//билд модел фак ю
-            String serverUrl = "https://defexggxhuligan.000webhostapp.com/login.php";
+            String serverUrl = "https://defexggxhuligan.000webhostapp.com/fuckraphael.php";
 
             try {
                 // Формируем URL для запроса
