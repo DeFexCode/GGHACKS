@@ -1,46 +1,46 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.5)
 
-# Ваши существующие настройки cmake
+project(AndKittyInjector)
 
-add_library(
-        # Название вашей библиотеки
-        inject
+# Set the path to the C and C++ compilers from your NDK
+set(CMAKE_C_COMPILER C:/Users/renat/AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe)
+set(CMAKE_CXX_COMPILER C:/Users/renat/AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe)
 
-        # Тип библиотеки (SHARED или STATIC)
-        SHARED
+# First Project: KittyMemoryExExample
+set(KITTYMEMORYEX_PATH ${CMAKE_SOURCE_DIR}/KittyMemoryEx)
+file(GLOB KITTYMEMORYEX_SRC ${KITTYMEMORYEX_PATH}/*.cpp)
 
-        # Пути к исходным файлам C++
-        main.cpp
-)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g -std=c++20 -DDEBUG -DkNO_KEYSTONE -Wno-unused-command-line-argument")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -Wextra -O2 -s -std=c++20 -DNDEBUG -DkNO_KEYSTONE -Wno-unused-command-line-argument")
 
-# Включаем поддержку C++11
+add_library(KittyMemoryExExample SHARED main.cpp ${KITTYMEMORYEX_SRC})
+
+target_include_directories(KittyMemoryExExample PUBLIC ${KITTYMEMORYEX_PATH})
+target_link_libraries(KittyMemoryExExample -llog -landroid)
+
+# Second Project: inject
+add_library(inject SHARED main.cpp)
+
 set_target_properties(inject PROPERTIES
         CXX_STANDARD 11
         CXX_EXTENSIONS OFF
         CXX_STANDARD_REQUIRED ON
         )
 
-# Добавляем необходимые библиотеки (если есть)
-# target_link_libraries(inject some_library)
+find_library(log-lib log)
 
-# Путь к NDK исходникам
+target_link_libraries(inject ${log-lib})
 
-# Включаем logcat вывод в Android
-find_library(
-        log-lib
-        log
-)
+# Set the path to the Keystone library
+set(KEYSTONE_LIB ${CMAKE_SOURCE_DIR}/KittyMemoryEx/Deps/libs-android/armeabi-v7a/libkeystone.a)
 
-# Связываем вашу библиотеку с библиотекой log
-target_link_libraries(
-        inject
-        ${log-lib}
-)
-
-# Добавляем разрешение на запись во внешнее хранилище
+# Include the path to Keystone headers
 target_include_directories(inject PRIVATE
         ${CMAKE_SOURCE_DIR}/src/main/cpp
+        ${CMAKE_SOURCE_DIR}/KittyMemoryEx/Deps/include
         )
 
-# Включаем исключения
+target_link_libraries(inject ${KEYSTONE_LIB})
+
+# Enable exceptions
 target_compile_options(inject PRIVATE -fexceptions)
