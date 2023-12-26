@@ -1,6 +1,8 @@
 package com.DeFexGGxANDLUA.hacks;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -246,7 +248,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Обработка других возможных ответов от сервера
             tvMessage.setText(result);
-
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("label", result);
+            clipboard.setPrimaryClip(clip);
             // Показываем Toast с сообщением об ошибке
             Toast.makeText(MainActivity.this, "Ошибка входа: " + result, Toast.LENGTH_SHORT).show();
         }
