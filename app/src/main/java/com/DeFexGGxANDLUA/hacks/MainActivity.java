@@ -173,6 +173,12 @@ public class MainActivity extends AppCompatActivity {
             preferences.edit().putString("username", txtUsername.getText().toString()).apply();
 
             // Здесь можно перейти на другой экран или выполнить другие действия
+        } else if (result.contains("Key expired") || result.contains("Error Code:1") || result.contains("Error Code:2")
+                || result.contains("Error Code:3") || result.contains("Error Code:4")) {
+            // Если ключ устарел или есть одна из ошибок, переходим по Uri в Telegram
+            Uri telegramUri = Uri.parse("https://t.me/DeFexHacksTechSupport");
+            Intent telegramIntent = new Intent(Intent.ACTION_VIEW, telegramUri);
+            startActivity(telegramIntent);
         } else {
             // Обработка других возможных ответов от сервера
             tvMessage.setText(result);
@@ -181,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Ошибка входа: " + result, Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void saveBuildIdToFile() {
         try {
