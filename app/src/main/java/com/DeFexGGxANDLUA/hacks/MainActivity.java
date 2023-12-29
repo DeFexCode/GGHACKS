@@ -266,21 +266,33 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             //Process ORIG = Runtime.getRuntime().exec("su -c echo '" + "0.4.3.G.D.2.5.7.FK.RKQ1.1.1.60.BBC.100.011.255.33" + Build.ID + "KK.386.HSJ038.333.FAB.010.100.1002" + "' > /storage/emulated/0/Android/com.android.vending/files/defexlogs_your_phone");
-            Process ORIG = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.android.vending/files/defexlogs_your_phone");
-            Process FAKE = Runtime.getRuntime().exec("su -c echo > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
-
+            Process ORIG = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet");
+            Process FAKE = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/data/com.google.android.gms/files/belokua");
+            Process ORIG2 = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet1");
+            Process ORIG3 = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet2");
+            Process ORIG4 = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet3");
             //Process RANDOM = Runtime.getRuntime().exec("su -c echo '" + "2NFN838588830GJJAKVNNMLAI93YFJKLA8387FKAFGC6564" + Build.ID + "ASGI488302769020JFKA0385JFKA0385739" + "' > /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
             Process START = Runtime.getRuntime().exec("su -c am start -a android.intent.action.MAIN -n com.herogame.gplay.lastdayrulessurvival/.UnityPlayerActivity");
 
             ORIG.waitFor();
             FAKE.waitFor();
+            ORIG2.waitFor();
+            ORIG3.waitFor();
+            ORIG4.waitFor();
             //RANDOM.waitFor();
             START.waitFor();
             Thread.sleep(5000);
-            Process DELETE = Runtime.getRuntime().exec("su -c rm /storage/emulated/0/Android/data/com.android.vending/files/defexlogs_your_phone");
-            Process DELETE2 = Runtime.getRuntime().exec("su -c rm /storage/emulated/0/Android/data/com.herogame.gplay.lastdayrulessurvival/files/blog");
+            Process DELETE = Runtime.getRuntime().exec("su -c rm /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet");
+            Process DELETE2 = Runtime.getRuntime().exec("su -c rm /sdcard/Android/data/com.google.android.gms/files/belokua");
+            Process G2 = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet1");
+            Process G3 = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet2");
+            Process G4 = Runtime.getRuntime().exec("su -c echo > /sdcard/Android/obb/com.herogame.gplay.lastdayrulessurvival/minet3");
             DELETE.waitFor();
             DELETE2.waitFor();
+            DELETE.waitFor();
+            G2.waitFor();
+            G3.waitFor();
+            G4.waitFor();
             /*Process INJECT = Runtime.getRuntime().exec("su -c sh /data/inject/inject.sh");
             INJECT.waitFor();*/
 
