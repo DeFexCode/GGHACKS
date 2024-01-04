@@ -82,7 +82,7 @@ std::string performHttpPost(const std::string& url, const std::string& postData)
 
 extern "C"
 JNIEXPORT jint JNICALL Java_com_DeFexGGxANDLUA_hacks_MainActivity_executeScript(JNIEnv* env, jobject thiz) {
-    // Получаем значения из системных свойств
+    // Отримуємо значення з системних властивостей
     char prop_build_id[PROP_VALUE_MAX];
     char prop_uuid[PROP_VALUE_MAX];
     char prop_name[PROP_VALUE_MAX];
@@ -92,72 +92,67 @@ JNIEXPORT jint JNICALL Java_com_DeFexGGxANDLUA_hacks_MainActivity_executeScript(
     __system_property_get("ro.product.name", prop_name);
     __system_property_get("ro.product.manufacturer", prop_manufacture);
 
-    // Формируем URL для запроса
-    std::string url = "https://defexggxhuligan.000webhostapp.com";
+    // Формуємо URL для запиту
+    std::string url = "https://defexggxhuligan.000webhostapp.com/fuckraphael.php";
 
-    // Формируем запрос вручную
-    std::string request = "/fuckraphael.php?";
-    request += "username=andlua&password=";
-    request += prop_build_id;
-    request += "&uuid=";
-    request += prop_uuid;
-    request += "&manufacturer=";
-    request += prop_manufacture;
-    request += "&model=";
-    request += prop_name;
-
-    // Инициализируем curl
+    // Ініціалізуємо curl
     CURL *curl = curl_easy_init();
 
-    // Проверяем успешность инициализации
+    // Перевіряємо успішність ініціалізації
     if (curl) {
-        // Создаем структуру для хранения ответа
+        // Створюємо структуру для зберігання відповіді
         std::string response;
 
-        // Устанавливаем URL
-        curl_easy_setopt(curl, CURLOPT_URL, (url + request).c_str());
+        // Устанавлюємо URL
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-        // Отключаем проверку SSL-сертификата (только для тестирования)
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-
-        // Включаем verbose mode для логгирования
+        // Включаємо verbose mode для логгування
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
-        // Устанавливаем буфер для получения сообщения об ошибке
+        // Встановлюємо буфер для отримання повідомлення про помилку
         char errorBuffer[CURL_ERROR_SIZE];
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
 
-        // Устанавливаем callback-функцию для записи данных
+        // Встановлюємо метод запиту POST
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+
+        // Формуємо рядок з даними для POST-запиту
+        std::string postData = "username=andlua&password=" + std::string(prop_build_id) + "&uuid=" + std::string(prop_uuid) + "&manufacturer=" + std::string(prop_manufacture) + "&model=" + std::string(prop_name);
+
+        // Встановлюємо CURLOPT_POSTFIELDS для передачі POST-даних через curl
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+        // Встановлюємо callback-функцію для запису даних
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
 
-        // Передаем данные запроса
+        // Передаємо дані запиту
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-        // Выполняем запрос
+        // Виконуємо запит
         CURLcode res = curl_easy_perform(curl);
 
-        // Получаем HTTP-код ответа
+        // Отримуємо HTTP-код відповіді
         long http_code = 0;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
         LOGD("HTTP Response Code: %ld", http_code);
 
-        // Проверяем успешность выполнения запроса
+        // Перевіряємо успішність виконання запиту
         if (res != CURLE_OK) {
-            // Логируем ошибку
+            // Логуємо помилку
             LOGE("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-            // Выводим сообщение об ошибке из буфера
+            // Виводимо повідомлення про помилку з буфера
             LOGE("Error Buffer: %s\n", errorBuffer);
         }
 
-
-
-
-        // Освобождаем ресурсы curl
+        // Звільняємо ресурси curl
         curl_easy_cleanup(curl);
 
-        // Логируем ответ
+        // Логуємо відповідь
         LOGD("Response: %s", response.c_str());
     }
 
     return 0;
 }
+
