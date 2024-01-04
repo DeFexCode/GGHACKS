@@ -2,45 +2,57 @@ cmake_minimum_required(VERSION 3.5)
 
 project(AndKittyInjector)
 
-# Set the path to the C and C++ compilers from your NDK
-#set(CMAKE_C_COMPILER C:/Users/renat/AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe)
-#set(CMAKE_CXX_COMPILER C:/Users/renat/AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe)
-
-# First Project: KittyMemoryExExample
-set(KITTYMEMORYEX_PATH ${CMAKE_SOURCE_DIR}/KittyMemoryEx)
-file(GLOB KITTYMEMORYEX_SRC ${KITTYMEMORYEX_PATH}/*.cpp)
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g -std=c++20 -DDEBUG -DkNO_KEYSTONE -Wno-unused-command-line-argument")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -Wextra -O2 -s -std=c++20 -DNDEBUG -DkNO_KEYSTONE -Wno-unused-command-line-argument")
-
-add_library(gui SHARED main.cpp ${KITTYMEMORYEX_SRC})
-
-target_include_directories(gui PUBLIC ${KITTYMEMORYEX_PATH})
-target_link_libraries(gui -llog -landroid)
-
-# Second Project: inject
+# Создание цели библиотеки 'inject32' с использованием файла 'main.cpp'
 add_library(inject32 SHARED main.cpp)
 
+# Установка свойств для цели 'inject32'
 set_target_properties(inject32 PROPERTIES
-        CXX_STANDARD 11
+        CXX_STANDARD 14
         CXX_EXTENSIONS OFF
         CXX_STANDARD_REQUIRED ON
         )
 
+# Добавление библиотеки liblog.so (предполагая, что вы используете библиотеку log)
 find_library(log-lib log)
-
 target_link_libraries(inject32 ${log-lib})
 
-# Set the path to the Keystone library
-set(KEYSTONE_LIB ${CMAKE_SOURCE_DIR}/KittyMemoryEx/Deps/libs-android/armeabi-v7a/libkeystone.a)
+# Включение поддержки исключений
+target_compile_options(inject32 PRIVATE -fexceptions)
 
-# Include the path to Keystone headers
-target_include_directories(inject32 PRIVATE
-        ${CMAKE_SOURCE_DIR}/src/main/cpp
-        ${CMAKE_SOURCE_DIR}/KittyMemoryEx/Deps/include
+# Общие пути к библиотекам и включаемым файлам
+set(BASE_PATH ${CMAKE_SOURCE_DIR})
+
+# Библиотеки для arm64-v8a
+set(LIBCURL_PATH_ARM64 ${BASE_PATH}/curl/curl-android-arm64-v8a/lib)
+set(LIBSSL_PATH_ARM64 ${BASE_PATH}/curl/openssl-android-arm64-v8a/lib)
+
+# Библиотеки для armeabi-v7a
+set(LIBCURL_PATH_ARMV7 ${BASE_PATH}/curl/curl-android-armeabi-v7a/lib)
+set(LIBSSL_PATH_ARMV7 ${BASE_PATH}/curl/openssl-android-armeabi-v7a/lib)
+
+# Включаемые файлы для arm64-v8a
+set(INCLUDE_PATH_ARM64 ${BASE_PATH}/curl/curl-android-arm64-v8a/include/curl/)
+set(INCLUDE_PATH_SSL_ARM64 ${BASE_PATH}/curl/openssl-android-arm64-v8a/include/curl/)
+
+# Включаемые файлы для armeabi-v7a
+set(INCLUDE_PATH_ARMV7 ${BASE_PATH}/curl/curl-android-armeabi-v7a/include/curl/)
+set(INCLUDE_PATH_SSL_ARMV7 ${BASE_PATH}/curl/openssl-android-armeabi-v7a/include/curl/)
+
+# Линковка вашей цели 'inject32' с добавленными библиотеками
+target_link_libraries(inject32
+        ${LIBCURL_PATH_ARM64}/libcurl.a
+        ${LIBSSL_PATH_ARM64}/libssl.a
+        ${LIBSSL_PATH_ARM64}/libcrypto.a
+        ${LIBCURL_PATH_ARMV7}/libcurl.a
+        ${LIBSSL_PATH_ARMV7}/libssl.a
+        ${LIBSSL_PATH_ARMV7}/libcrypto.a
+        z  # Добавляем библиотеку zlib
         )
 
-target_link_libraries(inject32 ${KEYSTONE_LIB})
-
-# Enable exceptions
-target_compile_options(inject32 PRIVATE -fexceptions)
+# Добавление путей к включаемым файлам
+include_directories(
+        ${INCLUDE_PATH_ARM64}
+        ${INCLUDE_PATH_SSL_ARM64}
+        ${INCLUDE_PATH_ARMV7}
+        ${INCLUDE_PATH_SSL_ARMV7}
+)

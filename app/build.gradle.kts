@@ -27,12 +27,12 @@ android {
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
             version = "3.22.1"
+
         }
     }
 
@@ -40,7 +40,7 @@ android {
     defaultConfig {
         externalNativeBuild {
             cmake {
-                abiFilters("armeabi-v7a")
+                abiFilters("armeabi-v7a", "arm64-v8a")
             }
         }
     }
