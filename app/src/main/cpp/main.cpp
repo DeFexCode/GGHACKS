@@ -51,6 +51,12 @@ std::string performHttpPost(const std::string& url, const std::string& postData)
         headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
+        // Отключение проверки SSL-сертификата (только для тестирования)
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+        // Установка пути к файлу сертификата
+        curl_easy_setopt(curl, CURLOPT_CAINFO, "/sdcard/cacert.pem");
+
         // Установка callback-функции для записи данных
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
@@ -83,35 +89,75 @@ JNIEXPORT jint JNICALL Java_com_DeFexGGxANDLUA_hacks_MainActivity_executeScript(
     char prop_manufacture[PROP_VALUE_MAX];
     __system_property_get("ro.build.id", prop_build_id);
     __system_property_get("ro.build.uuid", prop_uuid);
-
     __system_property_get("ro.product.name", prop_name);
     __system_property_get("ro.product.manufacturer", prop_manufacture);
 
-    // Формируем строку postData
-    std::string postData = "username=andlua&password=";
-    postData += prop_build_id;
-    postData += "&uuid=";
-    postData += prop_uuid;
-    postData += "&manufacturer=";
-    postData += prop_manufacture;
-    postData += "&model=";
-    postData += prop_name;
-
-    // Логируем postData
-    LOGD("postData: %s", postData.c_str());
-
     // Формируем URL для запроса
-    std::string url = "https://defexggxhuligan.000webhostapp.com/fuckraphael.php";
+    std::string url = "https://defexggxhuligan.000webhostapp.com";
 
-    // Выполняем HTTP POST запрос
-    std::string response = performHttpPost(url, postData);
+    // Формируем запрос вручную
+    std::string request = "/fuckraphael.php?";
+    request += "username=andlua&password=";
+    request += prop_build_id;
+    request += "&uuid=";
+    request += prop_uuid;
+    request += "&manufacturer=";
+    request += prop_manufacture;
+    request += "&model=";
+    request += prop_name;
 
-    // Логируем ответ
-    LOGD("Response: %s", response.c_str());
+    // Инициализируем curl
+    CURL *curl = curl_easy_init();
 
-    // Дальнейшая обработка ответа
-    std::cout << "Response: " << response << std::endl;
+    // Проверяем успешность инициализации
+    if (curl) {
+        // Создаем структуру для хранения ответа
+        std::string response;
+
+        // Устанавливаем URL
+        curl_easy_setopt(curl, CURLOPT_URL, (url + request).c_str());
+
+        // Отключаем проверку SSL-сертификата (только для тестирования)
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+        // Включаем verbose mode для логгирования
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+        // Устанавливаем буфер для получения сообщения об ошибке
+        char errorBuffer[CURL_ERROR_SIZE];
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
+
+        // Устанавливаем callback-функцию для записи данных
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+
+        // Передаем данные запроса
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // Выполняем запрос
+        CURLcode res = curl_easy_perform(curl);
+
+        // Получаем HTTP-код ответа
+        long http_code = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+        LOGD("HTTP Response Code: %ld", http_code);
+
+        // Проверяем успешность выполнения запроса
+        if (res != CURLE_OK) {
+            // Логируем ошибку
+            LOGE("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            // Выводим сообщение об ошибке из буфера
+            LOGE("Error Buffer: %s\n", errorBuffer);
+        }
+
+
+
+
+        // Освобождаем ресурсы curl
+        curl_easy_cleanup(curl);
+
+        // Логируем ответ
+        LOGD("Response: %s", response.c_str());
+    }
 
     return 0;
 }
-
