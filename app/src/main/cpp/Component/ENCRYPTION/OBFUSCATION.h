@@ -27,8 +27,8 @@ std::cout << OBFUSCATE_string << std::endl;
 
 ----------------------------------------------------------------------------- */
 
-#include "../../../../../../../../AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/cstddef"
-#include "../../../../../../../../AppData/Local/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/string"
+#include <cstddef>
+#include <string>
 namespace ay
 {
     // Obfuscates a string at compile time
