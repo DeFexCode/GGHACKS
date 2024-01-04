@@ -31,12 +31,12 @@ set(LIBCURL_PATH_ARMV7 ${BASE_PATH}/curl/curl-android-armeabi-v7a/lib)
 set(LIBSSL_PATH_ARMV7 ${BASE_PATH}/curl/openssl-android-armeabi-v7a/lib)
 
 # Включаемые файлы для arm64-v8a
-set(INCLUDE_PATH_ARM64 ${BASE_PATH}/curl/curl-android-arm64-v8a/include/curl/)
-set(INCLUDE_PATH_SSL_ARM64 ${BASE_PATH}/curl/openssl-android-arm64-v8a/include/curl/)
+set(INCLUDE_PATH_ARM64 ${BASE_PATH}/curl/curl-android-arm64-v8a/include/)
+set(INCLUDE_PATH_SSL_ARM64 ${BASE_PATH}/curl/openssl-android-arm64-v8a/include/)
 
 # Включаемые файлы для armeabi-v7a
-set(INCLUDE_PATH_ARMV7 ${BASE_PATH}/curl/curl-android-armeabi-v7a/include/curl/)
-set(INCLUDE_PATH_SSL_ARMV7 ${BASE_PATH}/curl/openssl-android-armeabi-v7a/include/curl/)
+set(INCLUDE_PATH_ARMV7 ${BASE_PATH}/curl/curl-android-armeabi-v7a/include/)
+set(INCLUDE_PATH_SSL_ARMV7 ${BASE_PATH}/curl/openssl-android-armeabi-v7a/include/)
 
 # Линковка вашей цели 'inject32' с добавленными библиотеками
 target_link_libraries(inject32

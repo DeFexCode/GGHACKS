@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
 
         executeScript();
         VideoView videoView = findViewById(R.id.videoBackground);
-        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video;
-        videoView.setVideoURI(Uri.parse(videoPath));
-        videoView.start();
+        //String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video;
+        //videoView.setVideoURI(Uri.parse(videoPath));
+        //videoView.start();
 
-        videoView.setOnCompletionListener((MediaPlayer mp) -> videoView.start());
+        //videoView.setOnCompletionListener((MediaPlayer mp) -> videoView.start());
 
         // Initialize views
         txtUsername = findViewById(R.id.txtUsername);
