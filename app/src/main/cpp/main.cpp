@@ -25,7 +25,7 @@ JNIEXPORT void JNICALL Java_com_DeFexGGxANDLUA_hacks_MainActivity_executeScript(
 
         if (res && res->status == 200) {
             // Если запрос успешен, то сохраняем файл
-            std::ofstream outfile("/sdcrad/download/negrpashet.txt");
+            std::ofstream outfile("/sdcard/download/negrpashet.txt");
             outfile << res->body;
             outfile.close();
             LOGI("File downloaded successfully.");
